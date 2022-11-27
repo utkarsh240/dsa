@@ -1,4 +1,6 @@
-// wap which will take n node information only. and after taking n integer inputs it will prepare the normal node's part b and header node's all part [a,b,c,d]. display the linked list.
+// wap to create a circular linked list of n element and applay the following operastion on it :
+// a. delete all the nodes at index of multiple of k and add nodes in the starting of the curcular linked list
+// b. display the circular linked list
 
 #include<stdio.h>
 #include<stdlib.h>
@@ -9,51 +11,105 @@ struct node
     struct node *next;
 };
 
-struct node *create_node(int data)
+struct node *head = NULL;
+
+void create(int n)
 {
-    struct node *new_node = (struct node *)malloc(sizeof(struct node));
-    new_node->data = data;
-    new_node->next = NULL;
-    return new_node;
+    struct node *newnode, *temp;
+    int data, i;
+    head = (struct node *)malloc(sizeof(struct node));
+    if(head == NULL)
+    {
+        printf("Unable to allocate memory.");
+    }
+    else
+    {
+        printf("Enter the data of node 1: ");
+        scanf("%d", &data);
+        head->data = data;
+        head->next = NULL;
+        temp = head;
+        for(i=2; i<=n; i++)
+        {
+            newnode = (struct node *)malloc(sizeof(struct node));
+            if(newnode == NULL)
+            {
+                printf("Unable to allocate memory.");
+                break;
+            }
+            else
+            {
+                printf("Enter the data of node %d: ", i);
+                scanf("%d", &data);
+                newnode->data = data;
+                newnode->next = NULL;
+                temp->next = newnode;
+                temp = temp->next;
+            }
+        }
+        temp->next = head;
+        printf("CIRCULAR LINKED LIST CREATED SUCCESSFULLY ");
+    }
 }
 
-struct node *create_linked_list(int n)
+void display()
 {
-    struct node *head = NULL;
-    struct node *temp = NULL;
-    int data;
-    for(int i=0; i<n; i++)
+    struct node *temp;
+    if(head == NULL)
     {
-        scanf("%d",&data);
-        if(head == NULL)
+        printf("List is empty.");
+    }
+    else
+    {
+        temp = head;
+        do {
+            printf("%d ", temp->data);
+            temp = temp->next;
+        }while(temp != head);
+        printf(" ");
+    }
+}
+
+// delete the node at the index of multiple of k
+void delete(int k)
+{
+    struct node *temp, *prev;
+    int i = 1;
+    temp = head;
+    while(temp->next != head)
+    {
+        if(i % k == 0)
         {
-            head = create_node(data);
-            temp = head;
+            prev->next = temp->next;
+            free(temp);
+            temp = prev->next;
         }
         else
         {
-            temp->next = create_node(data);
+            prev = temp;
             temp = temp->next;
         }
+        i++;
     }
-    return head;
-}
-
-void display(struct node *head)
-{
-    struct node *temp = head;
-    while(temp != NULL)
+    if(i % k == 0)
     {
-        printf("%d ",temp->data);
-        temp = temp->next;
+        prev->next = temp->next;
+        free(temp);
     }
 }
 
 int main()
 {
-    int n;
-    scanf("%d",&n);
-    struct node *head = create_linked_list(n);
-    display(head);
+    int n, k;
+    printf("Enter the number of nodes: ");
+    scanf("%d", &n);
+    create(n);
+    printf("  ");
+    printf("Enter the value of k: ");
+    scanf("%d", &k);
+    delete(k);
+    printf("  ");
+    printf("\n\nDisplay: ");
+    display();
     return 0;
 }
