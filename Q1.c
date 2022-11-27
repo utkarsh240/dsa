@@ -10,125 +10,85 @@
 //a. node value or information
 //b. difference of node value and average value [of header node]
 
+// wap which will take n node information only. and after taking n integer inputs it will prepare the normal node's part b and header node's all part [a,b,c,d]. display the linked list.
+
 #include <stdio.h>
-#include <stdlib.h>
 
 struct node
 {
-    int data;
+    int info;
     int diff;
     struct node *next;
 };
 
 struct header
 {
-    int num;
+    int no_of_nodes;
     int avg;
-    int max;
-    int min;
+    int max_diff;
+    int min_diff;
     struct node *next;
 };
 
-struct header *create_header()
-{
-    struct header *h = (struct header *)malloc(sizeof(struct header));
-    h->num = 0;
-    h->avg = 0;
-    h->max = 0;
-    h->min = 0;
+void main() {
+    int n, i, sum = 0, avg, max_diff, min_diff;
+    struct header *h;
+    struct node *p, *q;
+
+    printf("Enter the number of nodes: ");
+    scanf("%d", &n);
+
+    h = (struct header *) malloc(sizeof(struct header));
+    h->no_of_nodes = n;
     h->next = NULL;
-    return h;
-}
 
-struct node *create_node(int data)
-{
-    struct node *n = (struct node *)malloc(sizeof(struct node));
-    n->data = data;
-    n->diff = 0;
-    n->next = NULL;
-    return n;
-}
+    printf("Enter the node information: ");
+    for (i = 0; i < n; i++) {
+        p = (struct node *) malloc(sizeof(struct node));
+        scanf("%d", &p->info);
+        sum += p->info;
+        p->next = NULL;
 
-void insert_node(struct header *h, int data)
-{
-    struct node *n = create_node(data);
-    struct node *temp = h->next;
-    if (temp == NULL)
-    {
-        h->next = n;
-    }
-    else
-    {
-        while (temp->next != NULL)
-        {
-            temp = temp->next;
+        if (h->next == NULL) {
+            h->next = p;
+        } else {
+            q->next = p;
         }
-        temp->next = n;
+        q = p;
     }
-    h->num++;
-}
 
-void display(struct header *h)
-{
-    struct node *temp = h->next;
-    while (temp != NULL)
-    {
-        printf("%d ", temp->data);
-        temp = temp->next;
-    }
-    printf("  num = %d", h->num);
-    printf("  avg = %d", h->avg);
-    printf("  max = %d", h->max);
-    printf("  min = %d", h->min);
-    printf(" diff = %d", h->max - h->min);
+    avg = sum / n;
+    h->avg = avg;
 
-}
-
-void calculate(struct header *h)
-{
-    struct node *temp = h->next;
-    int sum = 0;
-    while (temp != NULL)
-    {
-        sum += temp->data;
-        temp = temp->next;
-    }
-    h->avg = sum / h->num;
-    temp = h->next;
-    while (temp != NULL)
-    {
-        temp->diff = temp->data - h->avg;
-        if (temp->diff > h->max)
-        {
-            h->max = temp->diff;
+    p = h->next;
+    max_diff = p->info - avg;
+    min_diff = p->info - avg;
+    while (p != NULL) {
+        p->diff = p->info - avg;
+        if (p->diff > max_diff) {
+            max_diff = p->diff;
         }
-        if (temp->diff < h->min)
-        {
-            h->min = temp->diff;
+        if (p->diff < min_diff) {
+            min_diff = p->diff;
         }
-        temp = temp->next;
+        p = p->next;
     }
-}
 
-int main()
-{
-    struct header *h = create_header();
-    insert_node(h, 10);
-    insert_node(h, 20);
-    insert_node(h, 30);
-    insert_node(h, 40);
-    insert_node(h, 50);
-    insert_node(h, 60);
-    insert_node(h, 70);
-    insert_node(h, 80);
-    insert_node(h, 90);
-    insert_node(h, 100);
-    display(h);
-    calculate(h);
-    printf(" num = %d", h->num);
-    printf(" avg = %d", h->avg);
-    printf(" max = %d", h->max);
-    printf(" min = %d", h->min);
-    printf(" diff = %d", h->max - h->min);
-    return 0;
+    h->max_diff = max_diff;
+    h->min_diff = min_diff;
+
+    printf(" Header node information: ");
+    printf(" Number of nodes: %d", h->no_of_nodes);
+    printf(" Average value of elements: %d", h->avg);
+    printf(" Maximum difference of node value and average value: %d", h->max_diff);
+    printf(" Minimum difference of node value and average value: %d", h->min_diff);
+
+    printf(" Normal node information: ");
+    p = h->next;
+    while (p != NULL) {
+        printf(" Node value: %d", p->info);
+        printf(" Difference of node value and average value: %d", p->diff);
+        p = p->next;
+    }
+
 }
